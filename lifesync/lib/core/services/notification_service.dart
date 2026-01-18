@@ -1,13 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
 
 class NotificationService {
   static FlutterLocalNotificationsPlugin? _plugin;
 
   static Future<void> initialize(FlutterLocalNotificationsPlugin plugin) async {
     _plugin = plugin;
-    tz.initializeTimeZones();
+    tz_data.initializeTimeZones();
 
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     
@@ -58,7 +58,6 @@ class NotificationService {
       tz.TZDateTime.from(scheduledTime, tz.local),
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: null,
     );
   }
 
@@ -108,19 +107,18 @@ class NotificationService {
 
     const notificationDetails = NotificationDetails(android: androidDetails);
 
-    final title = isOwed 
+    final notifTitle = isOwed 
         ? 'Payment Due: $personName owes you' 
         : 'Payment Due: You owe $personName';
-    final body = '₹${amount.toStringAsFixed(2)} is due today';
+    final notifBody = '₹${amount.toStringAsFixed(2)} is due today';
 
     await _plugin!.zonedSchedule(
       id,
-      title,
-      body,
+      notifTitle,
+      notifBody,
       tz.TZDateTime.from(dueDate, tz.local),
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: null,
     );
   }
 
