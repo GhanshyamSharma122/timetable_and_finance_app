@@ -1,13 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz_data;
 
 class NotificationService {
   static FlutterLocalNotificationsPlugin? _plugin;
 
   static Future<void> initialize(FlutterLocalNotificationsPlugin plugin) async {
     _plugin = plugin;
-    tz_data.initializeTimeZones();
 
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     
@@ -32,11 +29,10 @@ class NotificationService {
     // based on response.payload
   }
 
-  static Future<void> scheduleTaskReminder({
+  static Future<void> showTaskReminder({
     required int id,
     required String title,
     required String body,
-    required DateTime scheduledTime,
   }) async {
     if (_plugin == null) return;
 
@@ -51,17 +47,10 @@ class NotificationService {
 
     const notificationDetails = NotificationDetails(android: androidDetails);
 
-    await _plugin!.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+    await _plugin!.show(id, title, body, notificationDetails);
   }
 
-  static Future<void> scheduleBudgetAlert({
+  static Future<void> showBudgetAlert({
     required int id,
     required String category,
     required double percentage,
@@ -87,11 +76,10 @@ class NotificationService {
     );
   }
 
-  static Future<void> scheduleLendingReminder({
+  static Future<void> showLendingReminder({
     required int id,
     required String personName,
     required double amount,
-    required DateTime dueDate,
     required bool isOwed,
   }) async {
     if (_plugin == null) return;
@@ -112,14 +100,7 @@ class NotificationService {
         : 'Payment Due: You owe $personName';
     final notifBody = '₹${amount.toStringAsFixed(2)} is due today';
 
-    await _plugin!.zonedSchedule(
-      id,
-      notifTitle,
-      notifBody,
-      tz.TZDateTime.from(dueDate, tz.local),
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+    await _plugin!.show(id, notifTitle, notifBody, notificationDetails);
   }
 
   static Future<void> cancelNotification(int id) async {
