@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/formatters.dart';
-import '../../../data/models/task.dart';
-import '../../../data/models/transaction.dart';
-import '../../../data/models/lending.dart';
 import '../widgets/task_summary_card.dart';
 import '../widgets/finance_summary_card.dart';
 import '../widgets/upcoming_dues_card.dart';

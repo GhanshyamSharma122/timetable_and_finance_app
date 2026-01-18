@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
 import '../../timetable/screens/timetable_screen.dart';
 import '../../finance/screens/finance_screen.dart';

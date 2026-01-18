@@ -5,7 +5,6 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../data/models/lending.dart';
 import '../widgets/lending_tile.dart';
-import 'add_lending_screen.dart';
 
 final lendingTabProvider = StateProvider<int>((ref) => 0);
 

@@ -7,7 +7,6 @@ import '../../../core/utils/formatters.dart';
 import '../../../data/models/transaction.dart';
 import '../../../data/models/category.dart';
 import '../widgets/transaction_tile.dart';
-import 'add_transaction_screen.dart';
 
 final selectedMonthProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
