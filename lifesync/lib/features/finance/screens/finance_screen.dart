@@ -7,6 +7,8 @@ import '../../../core/utils/formatters.dart';
 import '../../../data/models/transaction.dart';
 import '../../../data/models/category.dart';
 import '../widgets/transaction_tile.dart';
+import 'budget_screen.dart';
+import 'savings_screen.dart';
 
 final selectedMonthProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
@@ -23,21 +25,56 @@ class FinanceScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Finance'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bar_chart),
-            onPressed: () {
-              // TODO: Navigate to reports
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'budgets') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BudgetScreen()),
+                );
+              } else if (value == 'savings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SavingsScreen()),
+                );
+              }
             },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'budgets',
+                child: Row(
+                  children: [
+                    Icon(Icons.pie_chart),
+                    SizedBox(width: 8),
+                    Text('Budgets'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'savings',
+                child: Row(
+                  children: [
+                    Icon(Icons.savings),
+                    SizedBox(width: 8),
+                    Text('Savings Goals'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
       body: ValueListenableBuilder(
-        valueListenable: Hive.box<TransactionModel>('transactions').listenable(),
+        valueListenable: Hive.box<TransactionModel>(
+          'transactions',
+        ).listenable(),
         builder: (context, Box<TransactionModel> box, _) {
           final transactions = box.values
-              .where((t) =>
-                  t.date.month == selectedMonth.month &&
-                  t.date.year == selectedMonth.year)
+              .where(
+                (t) =>
+                    t.date.month == selectedMonth.month &&
+                    t.date.year == selectedMonth.year,
+              )
               .toList();
 
           transactions.sort((a, b) => b.date.compareTo(a.date));
@@ -78,8 +115,12 @@ class FinanceScreen extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.chevron_left),
                         onPressed: () {
-                          ref.read(selectedMonthProvider.notifier).state =
-                              DateTime(selectedMonth.year, selectedMonth.month - 1);
+                          ref
+                              .read(selectedMonthProvider.notifier)
+                              .state = DateTime(
+                            selectedMonth.year,
+                            selectedMonth.month - 1,
+                          );
                         },
                       ),
                       Text(
@@ -95,8 +136,12 @@ class FinanceScreen extends ConsumerWidget {
                           if (selectedMonth.year < now.year ||
                               (selectedMonth.year == now.year &&
                                   selectedMonth.month < now.month)) {
-                            ref.read(selectedMonthProvider.notifier).state =
-                                DateTime(selectedMonth.year, selectedMonth.month + 1);
+                            ref
+                                .read(selectedMonthProvider.notifier)
+                                .state = DateTime(
+                              selectedMonth.year,
+                              selectedMonth.month + 1,
+                            );
                           }
                         },
                       ),
@@ -108,7 +153,9 @@ class FinanceScreen extends ConsumerWidget {
               // Summary Cards
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingM),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.paddingM,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -136,7 +183,9 @@ class FinanceScreen extends ConsumerWidget {
                           'Balance',
                           balance,
                           balance >= 0 ? AppColors.primary : AppColors.error,
-                          balance >= 0 ? Icons.trending_up : Icons.trending_down,
+                          balance >= 0
+                              ? Icons.trending_up
+                              : Icons.trending_down,
                           isDark,
                         ),
                       ),
@@ -152,7 +201,9 @@ class FinanceScreen extends ConsumerWidget {
                     margin: const EdgeInsets.all(AppSizes.paddingM),
                     padding: const EdgeInsets.all(AppSizes.paddingM),
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.cardDark : AppColors.surfaceLight,
+                      color: isDark
+                          ? AppColors.cardDark
+                          : AppColors.surfaceLight,
                       borderRadius: BorderRadius.circular(AppSizes.radiusM),
                     ),
                     child: Column(
@@ -210,10 +261,11 @@ class FinanceScreen extends ConsumerWidget {
                         Icon(
                           Icons.receipt_long_outlined,
                           size: 64,
-                          color: (isDark
-                                  ? AppColors.textSecondaryDark
-                                  : AppColors.textSecondaryLight)
-                              .withOpacity(0.5),
+                          color:
+                              (isDark
+                                      ? AppColors.textSecondaryDark
+                                      : AppColors.textSecondaryLight)
+                                  .withOpacity(0.5),
                         ),
                         const SizedBox(height: AppSizes.paddingM),
                         Text(
@@ -230,24 +282,25 @@ class FinanceScreen extends ConsumerWidget {
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingM),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.paddingM,
+                  ),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSizes.paddingS),
-                          child: TransactionTile(transaction: transactions[index]),
-                        );
-                      },
-                      childCount: transactions.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSizes.paddingS,
+                        ),
+                        child: TransactionTile(
+                          transaction: transactions[index],
+                        ),
+                      );
+                    }, childCount: transactions.length),
                   ),
                 ),
 
               // Bottom padding
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 80),
-              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
             ],
           );
         },

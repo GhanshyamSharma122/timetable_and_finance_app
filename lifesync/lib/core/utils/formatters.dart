@@ -10,7 +10,8 @@ class DateTimeUtils {
 
   static String formatDate(DateTime date) => dateFormat.format(date);
   static String formatTime(DateTime time) => timeFormat.format(time);
-  static String formatDateTime(DateTime dateTime) => dateTimeFormat.format(dateTime);
+  static String formatDateTime(DateTime dateTime) =>
+      dateTimeFormat.format(dateTime);
   static String formatMonthYear(DateTime date) => monthYearFormat.format(date);
   static String formatDay(DateTime date) => dayFormat.format(date);
   static String formatShortDate(DateTime date) => shortDateFormat.format(date);
@@ -88,7 +89,8 @@ class CurrencyUtils {
   static final NumberFormat compactFormat = NumberFormat.compact();
 
   static String format(double amount) => currencyFormat.format(amount);
-  
+  static String formatCurrency(double amount) => format(amount);
+
   static String formatCompact(double amount) {
     if (amount.abs() >= 100000) {
       return '₹${compactFormat.format(amount)}';
